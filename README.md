@@ -1,4 +1,4 @@
-# Lifespan for Biologists course
+# Lifespan for Biologists
 
 ## RStudio image to run Bayesian survival analyses 
 
