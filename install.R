@@ -1,0 +1,5 @@
+install.packages("rstanarm")
+install.packages("brms")
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("cowplot")
