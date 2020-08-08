@@ -8,4 +8,4 @@ This is the repository of the RStudio environments for Bayesian survival models 
  [![Binder](https://mybinder.org/badge_logo.svg)]( https://mybinder.org/v2/gh/zajitschek/RStudioLifespanBayesian/master?urlpath=rstudio )
  
 1. For *BaSTA* in chapter 5.2: launch RStudio (to open in your webbrowser) here:
- [![Binder](https://mybinder.org/badge_logo.svg)]( https://mybinder.org/v2/gh/zajitschek/RStudioLifespanBayesian/master?urlpath=rstudio )
+ [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/zajitschek/RStudioLifespanBayesian/BaSTA?urlpath=rstudio )
