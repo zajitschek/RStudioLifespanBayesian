@@ -1,3 +1,5 @@
 install.packages("rstanarm")
+install.packages("BaSTA")
+install.packages("ggplot2")
 install.packages("dplyr")
 install.packages("cowplot")
