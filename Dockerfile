@@ -8,6 +8,12 @@ RUN chown -R ${NB_USER} ${HOME}
 USER ${NB_USER}
 
 ## Run install.R from root directory
-RUN if [ -f install.R ]; then R --quiet -f install.R; fi
+#RUN if [ -f install.R ]; then R --quiet -f install.R; fi
+
+
+
+RUN apt-get install -y --no-install-recommends \
+           cowplot \
+           littler \
 
 RUN installGithub.R stan-dev/rstanarm
