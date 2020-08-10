@@ -42,23 +42,23 @@ basta_v2 <- basta_v2 %>% mutate(AD_LD = ifelse(AD_LD == 4, 1, 0), AD_SD = ifelse
 
 DataCheck(basta_v2, studyStart = 1, studyEnd = 84, silent=FALSE)
 
-#out_basta_ADHDmulti <- multibasta(object= basta_v2, studyStart= 1, studyEnd= 84, niter=50000, burnin=5001, thinning=50,  
+#out_basta_multi <- multibasta(object= basta_v2, studyStart= 1, studyEnd= 84, niter=50000, burnin=5001, thinning=50,  
         models = c("EX", "GO", "LO"), shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
 
-out_basta_exp <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
+out_basta_exp <- basta(object= basta_v2, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
         model = "EX", shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
 
-out_basta_gomp <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
+out_basta_gomp <- basta(object= basta_v2, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
         model = "GO", shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
 
 out_basta_exp$DIC[5] 
 out_basta_gomp$DIC[5] 
 out_basta_exp$DIC[5] - out_basta_gomp$DIC[5] 
 
-#plot(out_basta_ADHD)
-#plot(out_basta_ADHD, plot.trace = FALSE)
-plotFancyBaSTA(out_basta_ADHD)
-summary(out_basta_ADHD)
+#plot(out_basta_gomp)
+#plot(out_basta_gomp, plot.trace = FALSE)
+plotFancyBaSTA(out_basta_gomp)
+summary(out_basta_gomp)
 
 
 #######################################################################################
