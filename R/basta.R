@@ -10,8 +10,7 @@ suppressMessages(library(BaSTA))
 #script for function 'plotFancyBaSTA' is at bottom of this script file
 
 data1 <- read.csv("https://github.com/ZajitschekTeam/lifespananalysis/raw/master/binder/data/expevol_male_flies.csv")
-data1 <- data1 %>% mutate(across(where(is.integer), as.factor))
-data1$status <- 1
+data1$lifespan <- round(data1$lifespan)
 
 # Create a subset of three treatment groups/cohorts 
 # (3 assay diets (= all that are available) from 1 cagediet)
@@ -21,119 +20,40 @@ group1 <- subset(data1, cagediet== 1)
 
 basta_v2 <- matrix(0, nrow = nrow(group1), ncol = max(group1$lifespan))
 basta_v2 <- as.data.frame(basta_v2)
-vbasta3 <- cbind(group1[,c(1,2,8)], basta_v2)
+vbasta3 <- cbind(group1[,c(5,4,7)], basta_v2) #select assaydiet(AD), cagediet(ED), lifespan
 names(vbasta3) <- c("AD", "ED", "age", seq(1, max(group1$lifespan)) )
 vbasta3$age <- vbasta3$age -1
-#str(vbasta3)
-idx <- do.call(rbind, Map(function(a,b) 
-    cbind(a, match(1:b, colnames(vbasta3))), 
-    seq_along(vbasta3$age), vbasta3$age))
-vbasta3[idx]<-1
-head(vbasta3)
-##below: split ED into 3 separate columns, containing 0 and 1
-basta_v <- cbind(seq(1,nrow(vbasta3)), rep(1, nrow(vbasta3)), vbasta3$age+1,  vbasta3[,4:(max(V_surv$age)+3)], vbasta3$ED,vbasta3$ED,vbasta3$ED)
-basta_v$"1" <- rep(0, nrow(vbasta3))
-str(basta_v)
-names(basta_v) <- c("ID", "BIRTH", "DEATH", seq(1, max(V_surv$age)), "ED_LD", "ED_SD", "ED_HD")
-str(basta_v)
-head(basta_v)
-##recode LD,SD,HD into 0 and 1
-basta_v2 <- basta_v
-basta_v2$ED_LD <- as.character(basta_v2$ED_LD); basta_v2$ED_SD <- as.character(basta_v2$ED_SD); basta_v2$ED_HD <- as.character(basta_v2$ED_HD)
-basta_v2$ED_LD[basta_v2$ED_LD == "LD"] = 1
-basta_v2$ED_LD[basta_v2$ED_LD != "1"] = 0
-basta_v2$ED_SD[basta_v2$ED_SD == "SD"] = 1
-basta_v2$ED_SD[basta_v2$ED_SD != "1"] = 0
-basta_v2$ED_HD[basta_v2$ED_HD == "HD"] = 1
-basta_v2$ED_HD[basta_v2$ED_HD != "1"] = 0
-basta_v2$ED_LD <- as.numeric(basta_v2$ED_LD); basta_v2$ED_SD <- as.numeric(basta_v2$ED_SD); basta_v2$ED_HD <- as.numeric(basta_v2$ED_HD)
-str(basta_v2)
-head(basta_v2)
-basta_ADLD <- basta_v2
 
-## V_ADSD ##
-#fuer basta: use AD subsets, i.e. only 3 levels of ED
-basta_v2 <- matrix(0, nrow = nrow(V_ADSD), ncol = max(V_ADSD$age))
-basta_v2 <- as.data.frame(basta_v2)
-vbasta3 <- cbind(V_ADSD[,c(1,2,8)], basta_v2)
-names(vbasta3) <- c("AD", "ED", "age", seq(1, max(V_ADSD$age)) )
-vbasta3$age <- vbasta3$age -1
-str(vbasta3)
-idx <- do.call(rbind, Map(function(a,b) 
-    cbind(a, match(1:b, colnames(vbasta3))), 
-    seq_along(vbasta3$age), vbasta3$age))
-vbasta3[idx]<-1
-head(vbasta3)
-##below: split ED into 3 separate columns, containing 0 and 1
-basta_v <- cbind(seq(1,nrow(vbasta3)), rep(1, nrow(vbasta3)), vbasta3$age+1,  vbasta3[,4:(max(V_surv$age)+3)], vbasta3$ED,vbasta3$ED,vbasta3$ED)
-basta_v$"1" <- rep(0, nrow(vbasta3))
-str(basta_v)
-names(basta_v) <- c("ID", "BIRTH", "DEATH", seq(1, max(V_surv$age)), "ED_LD", "ED_SD", "ED_HD")
-str(basta_v)
-head(basta_v)
-##recode LD,SD,HD into 0 and 1
-basta_v2 <- basta_v
-basta_v2$ED_LD <- as.character(basta_v2$ED_LD); basta_v2$ED_SD <- as.character(basta_v2$ED_SD); basta_v2$ED_HD <- as.character(basta_v2$ED_HD)
-basta_v2$ED_LD[basta_v2$ED_LD == "LD"] = 1
-basta_v2$ED_LD[basta_v2$ED_LD != "1"] = 0
-basta_v2$ED_SD[basta_v2$ED_SD == "SD"] = 1
-basta_v2$ED_SD[basta_v2$ED_SD != "1"] = 0
-basta_v2$ED_HD[basta_v2$ED_HD == "HD"] = 1
-basta_v2$ED_HD[basta_v2$ED_HD != "1"] = 0
-basta_v2$ED_LD <- as.numeric(basta_v2$ED_LD); basta_v2$ED_SD <- as.numeric(basta_v2$ED_SD); basta_v2$ED_HD <- as.numeric(basta_v2$ED_HD)
-str(basta_v2)
-head(basta_v2)
-basta_ADSD <- basta_v2
+vbasta3[-c(1:3)][cbind(rep(1:nrow(vbasta3), vbasta3$age), sequence(vbasta3$age))] <- 1
 
-## V_ADHD ##
-#fuer basta: use AD subsets, i.e. only 3 levels of ED
-basta_v2 <- matrix(0, nrow = nrow(V_ADHD), ncol = max(V_ADHD$age))
-basta_v2 <- as.data.frame(basta_v2)
-vbasta3 <- cbind(V_ADHD[,c(1,2,8)], basta_v2)
-names(vbasta3) <- c("AD", "ED", "age", seq(1, max(V_ADHD$age)) )
-vbasta3$age <- vbasta3$age -1
-str(vbasta3)
-idx <- do.call(rbind, Map(function(a,b) 
-    cbind(a, match(1:b, colnames(vbasta3))), 
-    seq_along(vbasta3$age), vbasta3$age))
-vbasta3[idx]<-1
-head(vbasta3)
-##below: split ED into 3 separate columns, containing 0 and 1
-basta_v <- cbind(seq(1,nrow(vbasta3)), rep(1, nrow(vbasta3)), vbasta3$age+1,  vbasta3[,4:(max(V_surv$age)+3)], vbasta3$ED,vbasta3$ED,vbasta3$ED)
+# split AD into 3 separate columns, containing 0 and 1
+basta_v <- cbind(seq(1,nrow(vbasta3)), rep(1, nrow(vbasta3)), vbasta3$age+1,  vbasta3[,4:(max(vbasta3$age)+3)], vbasta3$AD,vbasta3$AD,vbasta3$AD)
 basta_v$"1" <- rep(0, nrow(vbasta3))
 str(basta_v)
-names(basta_v) <- c("ID", "BIRTH", "DEATH", seq(1, max(V_surv$age)), "ED_LD", "ED_SD", "ED_HD")
+names(basta_v) <- c("ID", "BIRTH", "DEATH", seq(1, max(vbasta3$age)), "AD_LD", "AD_SD", "AD_HD")
 str(basta_v)
 head(basta_v)
 ##recode LD,SD,HD into 0 and 1
 basta_v2 <- basta_v
-basta_v2$ED_LD <- as.character(basta_v2$ED_LD); basta_v2$ED_SD <- as.character(basta_v2$ED_SD); basta_v2$ED_HD <- as.character(basta_v2$ED_HD)
-basta_v2$ED_LD[basta_v2$ED_LD == "LD"] = 1
-basta_v2$ED_LD[basta_v2$ED_LD != "1"] = 0
-basta_v2$ED_SD[basta_v2$ED_SD == "SD"] = 1
-basta_v2$ED_SD[basta_v2$ED_SD != "1"] = 0
-basta_v2$ED_HD[basta_v2$ED_HD == "HD"] = 1
-basta_v2$ED_HD[basta_v2$ED_HD != "1"] = 0
-basta_v2$ED_LD <- as.numeric(basta_v2$ED_LD); basta_v2$ED_SD <- as.numeric(basta_v2$ED_SD); basta_v2$ED_HD <- as.numeric(basta_v2$ED_HD)
-str(basta_v2)
-head(basta_v2)
-basta_ADHD <- basta_v2
+basta_v2 <- basta_v2 %>% mutate(AD_LD = ifelse(AD_LD == 4, 1, 0), AD_SD = ifelse(AD_SD == 1, 1, 0), AD_HD = ifelse(AD_HD == 3, 1, 0))
+
 
 #### BASTA RUNS ###
 
-DataCheck(basta_ADHD, studyStart = 1, studyEnd = 86, silent=FALSE)
+DataCheck(basta_v2, studyStart = 1, studyEnd = 84, silent=FALSE)
 
-#out_basta_ADHDmulti <- multibasta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
+#out_basta_ADHDmulti <- multibasta(object= basta_v2, studyStart= 1, studyEnd= 84, niter=50000, burnin=5001, thinning=50,  
         models = c("EX", "GO", "LO"), shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
 
-out_basta_ADHD_exp <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
+out_basta_exp <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
         model = "EX", shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
-out_basta_ADHD_exp$DIC[5] #15517.83
-out_basta_ADHD$DIC[5] #13019.75
-out_basta_ADHD_exp$DIC[5] - out_basta_ADHD$DIC[5] #2498.078 : Gompertz much better!
 
-out_basta_ADHD <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
+out_basta_gomp <- basta(object= basta_ADHD, studyStart= 1, studyEnd= 86, niter=50000, burnin=5001, thinning=50,  
         model = "GO", shape = "simple", covarsStruct = "fused", nsim = 4, ncpus = 4, parallel = TRUE, updateJumps=TRUE)
+
+out_basta_exp$DIC[5] 
+out_basta_gomp$DIC[5] 
+out_basta_exp$DIC[5] - out_basta_gomp$DIC[5] 
 
 #plot(out_basta_ADHD)
 #plot(out_basta_ADHD, plot.trace = FALSE)
@@ -141,7 +61,8 @@ plotFancyBaSTA(out_basta_ADHD)
 summary(out_basta_ADHD)
 
 
-#######################
+#######################################################################################
+# to load this function, select everything below, then hit ENTER key (= run the script)
 
 plotFancyBaSTA <-
 function(x, open.new = FALSE, ...){
