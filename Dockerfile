@@ -9,3 +9,5 @@ USER ${NB_USER}
 
 ## Run install.R from root directory
 RUN if [ -f install.R ]; then R --quiet -f install.R; fi
+
+Run installGithub.R stan-dev/rstanarm
